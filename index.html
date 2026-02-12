@@ -1,0 +1,58 @@
+<div class="main-wrapper">
+    <header class="app-header">
+        <div class="logo-area">
+            <span class="logo-icon">SDR</span>
+            <div class="logo-text">
+                <h1>ADR Explorer</h1>
+                <p>Schweizer Tunnel- & Sicherheitscheck</p>
+            </div>
+        </div>
+    </header>
+
+    <section class="glass-card input-section">
+        <div class="input-row">
+            <div class="field">
+                <label>UN-Nummer</label>
+                <input type="text" id="un-num" placeholder="z.B. 1202" maxlength="4">
+            </div>
+            <div class="field">
+                <label>Menge (kg/L)</label>
+                <input type="number" id="un-weight" placeholder="Gewicht">
+            </div>
+        </div>
+        <button id="check-btn" class="primary-btn">Bestimmungen prüfen</button>
+    </section>
+
+    <div id="result-view" class="hidden">
+        <section class="glass-card result-card">
+            <div class="res-header">
+                <div class="un-badge" id="res-un">UN 1202</div>
+                <h2 id="res-label">Dieselkraftstoff</h2>
+            </div>
+
+            <div class="grid-layout">
+                <div class="info-panel">
+                    <h3><span class="icon">🚇</span> Tunnel-Check Schweiz</h3>
+                    <div id="tunnel-status" class="status-box">
+                        </div>
+                </div>
+
+                <div class="info-panel">
+                    <h3><span class="icon">📜</span> SDR Vorschriften</h3>
+                    <ul id="rules-list" class="styled-list">
+                        </ul>
+                </div>
+            </div>
+
+            <div class="points-section">
+                <div class="points-header">
+                    <span>1000-Punkte-Regel</span>
+                    <span id="points-display">0 / 1000</span>
+                </div>
+                <div class="progress-track">
+                    <div id="points-bar" class="progress-fill"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
