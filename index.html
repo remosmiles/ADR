@@ -3,32 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gotthard ADR-Check</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Gotthard ADR-Check 2025</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            max-width: 500px;
+            width: 100%;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        h1 { font-size: 1.5rem; margin-top: 0; color: #1e293b; text-align: center; }
+        .badge { display: block; text-align: center; font-size: 0.8rem; color: #64748b; margin-bottom: 20px; }
+
+        .input-box { margin-bottom: 15px; }
+        label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; color: #475569; }
+        
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus { outline: none; border-color: var(--primary); }
+
+        .checkbox-group {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-item { display: flex; align-items: center; margin-bottom: 8px; font-size: 0.9rem; cursor: pointer; }
+        .checkbox-item input { margin-right: 10px; width: 18px; height: 18px; }
+
+        button {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        }
+
+        button:active { transform: scale(0.98); }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .allowed { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .forbidden { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .info { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+        .res-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 5px; display: block; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Gotthard Tunnel-Check</h1>
-        <p class="subtitle">Kategorie E (Verschärft)</p>
-        
-        <div class="input-group">
-            <label>UN-Nummer</label>
-            <input type="text" id="unInput" placeholder="z.B. 1202" inputmode="numeric">
-        </div>
 
-        <div class="input-group">
-            <label>Menge (kg oder Liter)</label>
-            <input type="number" id="amountInput" placeholder="Menge eingeben">
-        </div>
+<div class="container">
+    <h1>Gotthard-Check</h1>
+    <span class="badge">Tunnelkategorie E | ADR 2025</span>
 
-        <button onclick="calculate()">Prüfen</button>
-
-        <div id="resultBox" class="result-hidden">
-            <h2 id="statusText"></h2>
-            <p id="detailText"></p>
-            <div id="pointsInfo"></div>
-        </div>
+    <div class="input-box">
+        <label>UN-Nummer</label>
+        <input type="text" id="unInput" placeholder="z.B. 1203" list="unList">
+        <datalist id="unList"></datalist>
     </div>
-    <script src="script.js"></script>
+
+    <div class="input-box">
+        <label>Menge (kg oder Liter)</label>
+        <input type="number" id="amountInput" placeholder="Gesamtmenge">
+    </div>
+
+    <div class="checkbox-group">
+        <label class="checkbox-item">
+            <input type="checkbox" id="isLQ"> Begrenzte Menge (LQ)
+        </label>
+        <label class="checkbox-item">
+            <input type="checkbox" id="isEmpty"> Leer ungereinigt (Verpackung)
+        </label>
+    </div>
+
+    <button onclick="checkADR()">Prüfung starten</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    // Datenbank (Auszug der wichtigsten 100 Stoffe ADR 2025)
+    const adrData = {
+        "1001": { n: "ACETYLEN, GELÖST", k: 2, t: "B/D" },
+        "1011": { n: "BUTAN", k: 2, t: "B/D" },
+        "1013": { n: "KOHLENDIOXID", k: 3, t: "E" },
+        "1072": { n: "SAUERSTOFF, VERDICHTET", k: 3, t: "E" },
+        "1075": { n: "PETROLEUMGASE, VERFLÜSSIGT (LPG)", k: 2, t: "B/D" },
+        "1090": { n: "ACETON", k: 2, t: "D/E" },
+        "1170": { n: "ETHANOL", k: 2, t: "D/E" },
+        "1202": { n: "DIESELKRAFTSTOFF / HEIZÖL", k: 3, t: "E" },
+        "1203": { n: "BENZIN / OTTOKRAFTSTOFF", k: 2, t: "D/E" },
+        "1230": { n: "METHANOL", k: 2, t: "D/E" },
+        "1263": { n: "FARBE / FARBZUBEHÖRSTOFFE", k: 2, t: "D/E" },
+        "1805": { n: "PHOSPHORSÄURE", k: 3, t: "E" },
+        "1824": { n: "NATRONLAUGE", k: 3, t: "E" },
+        "1950": { n: "DRUCKGASPACKUNGEN (SPRAYS)", k: 2, t: "D" },
+        "1965": { n: "LPG GEMISCH", k: 2, t: "B/D" },
+        "2031": { n: "SALPETERSÄURE", k: 2, t: "E" },
+        "2794": { n: "BATTERIEN, NASS, SÄURE", k: 3, t: "E" },
+        "3077": { n: "UMWELTGEFÄHRDENDER STOFF, FEST", k: 3, t: "(-)" },
+        "3082": { n: "UMWELTGEFÄHRDENDER STOFF, FLÜSSIG", k: 3, t: "(-)" },
+        "3480": { n: "LITHIUM-IONEN-BATTERIEN", k: 2, t: "E" }
+        // ... (weitere Nummern können hier wie oben eingefügt werden)
+    };
+
+    // Automatisches Füllen der Vorschlagsliste
+    const dl = document.getElementById('unList');
+    for (let un in adrData) {
+        let opt = document.createElement('option');
+        opt.value = un;
+        opt.innerText = adrData[un].n;
+        dl.appendChild(opt);
+    }
+
+    function checkADR() {
+        const un = document.getElementById('unInput').value.trim();
+        const amount = parseFloat(document.getElementById('amountInput').value);
+        const isLQ = document.getElementById('isLQ').checked;
+        const isEmpty = document.getElementById('isEmpty').checked;
+        const resDiv = document.getElementById('result');
+
+        resDiv.style.display = "block";
+
+        // Ausnahme 1: LQ (Limited Quantity)
+        if (isLQ) {
+            if (amount > 8000) {
+                resDiv.className = "info";
+                resDiv.innerHTML = "<span class='res-title'>⚠️ Achtung</span>LQ über 8t benötigt Kennzeichnung (Raute-Tafel). Gotthard-Regeln prüfen!";
+            } else {
+                resDiv.className = "allowed";
+                resDiv.innerHTML = "<span class='res-title'>✅ Frei</span>LQ unter 8t ist am Gotthard ohne Einschränkung erlaubt.";
+            }
+            return;
+        }
+
+        // Ausnahme 2: Leer ungereinigt
+        if (isEmpty) {
+            resDiv.className = "allowed";
+            resDiv.innerHTML = "<span class='res-title'>✅ Frei</span>Leere, ungereinigte Verpackungen benötigen keine Tunnelbeschränkung.";
+            return;
+        }
+
+        const data = adrData[un];
+        if (!data) {
+            resDiv.className = "info";
+            resDiv.innerHTML = "UN-Nummer nicht in der Datenbank. Bitte manuell prüfen.";
+            return;
+        }
+
+        // Punkteberechnung
+        let faktor = data.k === 1 ? 50 : (data.k === 2 ? 3 : (data.k === 3 ? 1 : 0));
+        const punkte = amount * faktor;
+
+        // Tunnel E Prüfung
+        const hasRestriction = data.t !== "(-)";
+
+        if (punkte > 1000 && hasRestriction) {
+            resDiv.className = "forbidden";
+            resDiv.innerHTML = `<span class='res-title'>❌ VERBOTEN</span>${data.n}<br>Punkte: ${punkte}. Kennzeichnungspflicht (Orange Tafel) -> Gotthard gesperrt.`;
+        } else {
+            resDiv.className = "allowed";
+            resDiv.innerHTML = `<span class='res-title'>✅ ERLAUBT</span>${data.n}<br>Punkte: ${punkte}. ${punkte > 1000 ? "Keine Tunnelbeschränkung." : "Unter Freigrenze (1000 Pkt)."}`;
+        }
+    }
+</script>
+
 </body>
 </html>
