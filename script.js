@@ -1,56 +1,60 @@
-const DB = {
-    "1203": { name: "PETROL / BENZIN", cat: 2 },
-    "1202": { name: "DIESEL / FUEL OIL", cat: 3 },
-    "1965": { name: "HYDROCARBON GAS", cat: 2 }
+// SDR-Datenbank für Schweizer Tunnel (Gotthard = Kategorie E)
+const SDR_DATABASE = {
+    "1202": { name: "DIESEL / HEIZÖL", factor: 1, tunnelCat: "E" },
+    "1203": { name: "BENZIN / OTTOKRAFTSTOFF", factor: 3, tunnelCat: "D/E" },
+    "1965": { name: "FLÜSSIGGAS (LPG)", factor: 3, tunnelCat: "B/D" },
+    "3082": { name: "UMWELTGEFÄHRDEND (FLÜSSIG)", factor: 1, tunnelCat: "E" },
+    "1072": { name: "SAUERSTOFF (KOMPRIMIERT)", factor: 1, tunnelCat: "E" }
 };
 
-// Live Uhr für den Desktop-Look
-setInterval(() => {
-    document.getElementById('live-clock').innerText = new Date().toLocaleTimeString();
-}, 1000);
-
-document.getElementById('run-btn').addEventListener('click', () => {
+document.getElementById('analyse-trigger').addEventListener('click', function() {
     const un = document.getElementById('un-input').value;
-    const kg = parseFloat(document.getElementById('un-weight').value) || 0;
+    const kg = parseFloat(document.getElementById('weight-input').value) || 0;
 
-    if (!DB[un]) return alert("ACCESS DENIED: UN_CODE NOT FOUND");
+    if (!SDR_DATABASE[un]) {
+        alert("CRITICAL ERROR: UN_CODE_NOT_IN_DATABASE");
+        return;
+    }
 
-    // Start Simulation
-    document.getElementById('loader').classList.remove('hidden');
-    let width = 0;
-    const bar = document.getElementById('bar');
+    // Simulation Scan
+    document.getElementById('loading-sequence').classList.remove('hidden');
+    document.getElementById('result-screen').classList.add('hidden');
+    
+    let progress = 0;
+    const bar = document.getElementById('load-progress');
 
-    const proc = setInterval(() => {
-        width += 2;
-        bar.style.width = width + "%";
-        if (width >= 100) {
-            clearInterval(proc);
-            showResults(un, kg);
+    const scan = setInterval(() => {
+        progress += 2;
+        bar.style.width = progress + "%";
+        
+        if (progress >= 100) {
+            clearInterval(scan);
+            processResults(un, kg);
         }
-    }, 30);
+    }, 20); // Schnelle Desktop-Simulation
 });
 
-function showResults(un, kg) {
-    document.getElementById('loader').classList.add('hidden');
-    document.getElementById('results').classList.remove('hidden');
+function processResults(un, kg) {
+    const data = SDR_DATABASE[un];
+    const points = kg * data.factor;
     
-    const data = DB[un];
-    const points = kg * (data.cat === 2 ? 3 : 1);
-    
-    document.getElementById('un-name').innerText = `IDENTIFIED: UN ${un} [${data.name}]`;
-    document.getElementById('points-val').innerText = points;
+    document.getElementById('loading-sequence').classList.add('hidden');
+    const screen = document.getElementById('result-screen');
+    screen.classList.remove('hidden');
 
-    const tBox = document.getElementById('tunnel-status-box');
-    const tText = document.getElementById('tunnel-text');
+    document.getElementById('res-name').innerText = data.name;
+    document.getElementById('res-points').innerText = points + " PKT";
 
-    // Gotthard Check (SDR Tunnelkat E)
+    const verdictBox = document.getElementById('tunnel-card');
+    const verdictText = document.getElementById('tunnel-verdict');
+
+    // Gotthard-Regel: Kategorie E Tunnel (SDR 1.1.3.6)
+    // Bei Überschreitung der 1000 Punkte Grenze ist der Gotthard verboten
     if (points > 1000) {
-        tText.innerText = "ACCESS_DENIED";
-        tBox.style.borderColor = "red";
-        tText.style.color = "red";
+        verdictBox.className = "decision-box block";
+        verdictText.innerText = "ACCESS_DENIED: TUNNEL_PASSAGE_FORBIDDEN";
     } else {
-        tText.innerText = "ACCESS_GRANTED";
-        tBox.style.borderColor = "var(--matrix-green)";
-        tText.style.color = "var(--matrix-green)";
+        verdictBox.className = "decision-box pass";
+        verdictText.innerText = "ACCESS_GRANTED: TUNNEL_PASSAGE_OK";
     }
 }
