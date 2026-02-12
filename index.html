@@ -1,47 +1,46 @@
-<div class="app-container">
-    <header class="app-header">
-        <div class="header-content">
-            <span class="system-tag">SDR | Schweiz</span>
-            <h1>CargoSafe <span class="light">PRO</span></h1>
+<div class="sdr-container">
+    <div class="sdr-card">
+        <div class="sdr-header">
+            <span class="status-dot"></span>
+            <h2>Schweizer Tunnel-Check</h2>
         </div>
-    </header>
 
-    <div class="glass-card main-search">
-        <div class="input-group">
-            <div class="field">
+        <div class="sdr-input-box">
+            <div class="input-wrapper">
                 <label>UN-NUMMER</label>
-                <input type="text" id="un-input" placeholder="z.B. 1203" maxlength="4">
+                <input type="text" id="un-input" placeholder="1203" maxlength="4">
             </div>
-            <div class="field">
-                <label>MENGE (KG/L)</label>
-                <input type="number" id="un-weight" placeholder="Menge eingeben">
+            <div class="input-wrapper">
+                <label>GEWICHT (KG)</label>
+                <input type="number" id="un-weight" placeholder="500">
             </div>
         </div>
-        <button id="check-btn" class="main-button">BESTIMMUNGEN PRÜFEN</button>
-    </div>
 
-    <div id="result-overlay" class="hidden">
-        <div class="glass-card result-sheet">
-            <div class="res-head">
-                <div class="un-number" id="res-un">UN ----</div>
-                <h2 id="res-name">Gefahrgutbezeichnung</h2>
+        <button id="search-btn" class="sdr-btn">Prüfung starten</button>
+
+        <div id="loader-container" class="hidden">
+            <div class="loader-text">Abfrage SDR-Datenbank & Tunnelkategorien...</div>
+            <div class="progress-track">
+                <div id="progress-bar" class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div id="result-card" class="hidden">
+            <div class="result-header">
+                <h3 id="res-un-name">UN 1203 Benzin</h3>
+            </div>
+            
+            <div class="tunnel-result" id="tunnel-box">
+                <div class="tunnel-icon">🚇</div>
+                <div class="tunnel-text">
+                    <strong>Gotthard-Tunnel (Kat. E)</strong>
+                    <span id="tunnel-status">Wird geprüft...</span>
+                </div>
             </div>
 
-            <div class="status-grid">
-                <div class="status-box" id="tunnel-box">
-                    <span class="label">TUNNEL-STATUS (CH)</span>
-                    <div class="value" id="tunnel-val">Warten...</div>
-                </div>
-                <div class="status-box" id="points-box">
-                    <span class="label">1000-PUNKTE-CHECK</span>
-                    <div class="value" id="points-val">0 Pkt.</div>
-                </div>
-            </div>
-
-            <div class="info-details">
-                <h3>VORSCHRIFTEN & AUSRÜSTUNG</h3>
-                <ul id="rule-list" class="pro-list">
-                    </ul>
+            <div class="points-info">
+                <span>Berechnete Punkte:</span>
+                <strong id="points-val">0</strong>
             </div>
         </div>
     </div>
