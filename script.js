@@ -1,49 +1,52 @@
-// SDR Datenbank Schweiz
-const ADR_DATABASE = {
-    "1202": { name: "Diesel / Heizöl", cat: 3, class: "3", tunnels: "E", risk: "Umweltgefährdend" },
-    "1203": { name: "Benzin", cat: 2, class: "3", tunnels: "D/E", risk: "Leichtentzündlich" },
-    "1965": { name: "LPG Flüssiggas", cat: 2, class: "2.1", tunnels: "B/D", risk: "Explosionsgefahr" },
-    "3082": { name: "Umweltgefährdend", cat: 3, class: "9", tunnels: "E", risk: "Klasse 9" }
+const SDR_DATA = {
+    "1202": { name: "Dieselkraftstoff", cat: 3 },
+    "1203": { name: "Benzin", cat: 2 },
+    "1965": { name: "Flüssiggas", cat: 2 },
+    "3082": { name: "Umweltgef. Stoff", cat: 3 }
 };
 
-document.getElementById('check-btn').addEventListener('click', function() {
+document.getElementById('search-btn').addEventListener('click', function() {
     const un = document.getElementById('un-input').value;
-    const weight = parseFloat(document.getElementById('un-weight').value) || 0;
-    const resultView = document.getElementById('result-overlay');
+    const weight = document.getElementById('un-weight').value;
+    
+    if(!SDR_DATA[un]) { alert("UN-Nummer nicht gefunden"); return; }
 
-    if (ADR_DATABASE[un]) {
-        const data = ADR_DATABASE[un];
-        resultView.classList.remove('hidden');
+    // UI zurücksetzen & Ladebalken zeigen
+    document.getElementById('loader-container').classList.remove('hidden');
+    document.getElementById('result-card').classList.add('hidden');
+    let progress = 0;
+    const bar = document.getElementById('progress-bar');
 
-        // 1000-Punkte Logik
-        const factor = (data.cat === 2) ? 3 : 1;
-        const points = weight * factor;
-        
-        // UI Bespielen
-        document.getElementById('res-un').innerText = "UN " + un;
-        document.getElementById('res-name').innerText = data.name;
-        document.getElementById('points-val').innerText = points + " Pkt.";
-
-        // Tunnel-Logik (Schweiz SDR)
-        const tVal = document.getElementById('tunnel-val');
-        const tBox = document.getElementById('tunnel-box');
-        
-        if (points > 1000) {
-            tVal.innerText = "PASSIEREN VERBOTEN (E)";
-            tBox.style.color = "#ff3b30";
-        } else {
-            tVal.innerText = "TUNNEL ERLAUBT";
-            tBox.style.color = "#34c759";
+    // Lade-Animation (2 Sekunden "Abfrage")
+    const interval = setInterval(() => {
+        progress += 5;
+        bar.style.width = progress + "%";
+        if (progress >= 100) {
+            clearInterval(interval);
+            showResult(un, weight);
         }
-
-        // Bestimmungen generieren
-        let rules = points > 1000 
-            ? ["Orangene Tafeln öffnen", "ADR-Bescheinigung Pflicht", "S-Koffer Ausrüstung", "Fahrzeugüberwachung"]
-            : ["Freigestellt nach 1.1.3.6", "2kg Feuerlöscher", "Beförderungspapier nötig", "Ladungssicherung nach SDR"];
-        
-        document.getElementById('rule-list').innerHTML = rules.map(r => `<li>${r}</li>`).join('');
-
-    } else {
-        alert("UN-Nummer nicht gefunden. Bitte nutzen Sie z.B. 1202 oder 1203.");
-    }
+    }, 100);
 });
+
+function showResult(un, weight) {
+    const data = SDR_DATA[un];
+    const points = weight * (data.cat === 2 ? 3 : 1);
+    
+    document.getElementById('loader-container').classList.add('hidden');
+    document.getElementById('result-card').classList.remove('hidden');
+    document.getElementById('res-un-name').innerText = "UN " + un + " " + data.name;
+    document.getElementById('points-val').innerText = points;
+
+    const tBox = document.getElementById('tunnel-box');
+    const tStatus = document.getElementById('tunnel-status');
+
+    // Gotthard Logik (Kategorie E)
+    // Über 1000 Punkte: Verboten für Kat E
+    if (points > 1000) {
+        tBox.className = "tunnel-result tunnel-error";
+        tStatus.innerText = "DURCHFAHRT VERBOTEN";
+    } else {
+        tBox.className = "tunnel-result tunnel-ok";
+        tStatus.innerText = "DURCHFAHRT ERLAUBT";
+    }
+}
