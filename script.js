@@ -1,26 +1,52 @@
-let adrDatabase = {};
+let adrDatabase = null;
 
-// Lädt die Datenbank beim Start der Seite
-async function loadDatabase() {
+// Diese Funktion lädt die JSON-Datei automatisch beim Start
+async function initApp() {
     try {
-        // Ersetze dies durch die URL deiner JSON-Datei (z.B. auf GitHub oder Vercel)
-        const response = await fetch('https://deine-url.vercel.app/adr_data.json');
+        const response = await fetch('./adr_data.json'); // Lädt die Datei aus deinem Verzeichnis
         adrDatabase = await response.json();
-        console.log("Datenbank erfolgreich geladen");
-    } catch (error) {
-        console.error("Fehler beim Laden der Daten:", error);
+        console.log("Datenbank bereit");
+    } catch (e) {
+        console.error("Datenbank konnte nicht geladen werden");
     }
 }
 
-// Initialisierung
-loadDatabase();
+async function calculate() {
+    // Sicherstellen, dass die Daten geladen sind
+    if (!adrDatabase) {
+        await initApp();
+    }
 
-function calculate() {
     const un = document.getElementById('unInput').value.trim();
-    const item = adrDatabase[un]; // Greift auf die online geladenen Daten zu
-    
+    const amount = parseFloat(document.getElementById('amountInput').value);
+    const resultBox = document.getElementById('resultBox');
+
+    const item = adrDatabase[un];
+
     if (!item) {
-        // ... Fehlerbehandlung ...
+        resultBox.style.display = "block";
+        resultBox.className = "warning";
+        resultBox.innerHTML = "⚠️ UN-Nummer nicht gefunden.";
+        return;
     }
-    // ... restliche Logik ...
+
+    // Punkte-Logik
+    let faktor = item.k === 1 ? 50 : (item.k === 2 ? 3 : 1);
+    const punkte = amount * faktor;
+
+    // Gotthard-Check (Tunnel Kat E)
+    // Wenn Tunnelcode ungleich (-) und Punkte > 1000 -> Verboten
+    const restricted = item.t !== "(-)";
+    
+    resultBox.style.display = "block";
+    if (punkte > 1000 && restricted) {
+        resultBox.className = "forbidden";
+        resultBox.innerHTML = `❌ <b>Gesperrt</b><br>${item.n}<br>${punkte} Punkte`;
+    } else {
+        resultBox.className = "allowed";
+        resultBox.innerHTML = `✅ <b>Fahrt erlaubt</b><br>${item.n}<br>${punkte} Punkte`;
+    }
 }
+
+// Startet den Ladevorgang
+initApp();
