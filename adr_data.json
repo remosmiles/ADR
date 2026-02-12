@@ -117,5 +117,32 @@
   "1972": { "n": "METHAN, FLÜSSIG", "k": 3, "t": "B/D" },
   "1977": { "n": "STICKSTOFF, FLÜSSIG", "k": 3, "t": "E" },
   "1987": { "n": "ALKOHOLE, N.A.G.", "k": 2, "t": "D/E" },
+  {
+  "0014": { "n": "PATRONEN FÜR WAFFEN, MANÖVER", "k": 1, "t": "S" },
+  "1003": { "n": "LUFT, TIEFGEKÜHLT, FLÜSSIG", "k": 3, "t": "E" },
+  "1114": { "n": "BENZOL", "k": 2, "t": "D/E" },
+  "1170": { "n": "ETHANOL / ETHANOL-LÖSUNG", "k": 2, "t": "D/E" },
+  "1197": { "n": "EXTRAKTE, GESCHMACKSTOFFE, FLÜSSIG", "k": 3, "t": "D/E" },
+  "1219": { "n": "ISOPROPANOL (ISOPROPYLALKOHOL)", "k": 2, "t": "D/E" },
+  "1263": { "n": "FARBE / FARBZUBEHÖRSTOFFE", "k": 2, "t": "D/E" },
+  "1268": { "n": "ERDÖLDESTILLATE, N.A.G.", "k": 2, "t": "D/E" },
+  "1791": { "n": "HYPOCHLORITLÖSUNG (CHLORLAUGE)", "k": 3, "t": "E" },
+  "1805": { "n": "PHOSPHORSÄURE, LÖSUNG", "k": 3, "t": "E" },
+  "1824": { "n": "NATRONLAUGE", "k": 3, "t": "E" },
+  "1950": { "n": "DRUCKGASPACKUNGEN (SPRAYDOSEN)", "k": 2, "t": "D" },
+  "2031": { "n": "SALPETERSÄURE", "k": 2, "t": "E" },
+  "2582": { "n": "EISEN(III)-CHLORID-LÖSUNG", "k": 3, "t": "E" },
+  "2794": { "n": "BATTERIEN, NASS, GEFÜLLT MIT SÄURE", "k": 3, "t": "E" },
+  "2911": { "n": "RADIOAKTIVE STOFFE, FREIGESTELLTES VERSANDSTÜCK", "k": 4, "t": "(-)" },
+  "3065": { "n": "ALKOHOLISCHE GETRÄNKE (> 24 Vol-%)", "k": 3, "t": "D/E" },
+  "3082": { "n": "UMWELTGEFÄHRDENDER STOFF, FLÜSSIG, N.A.G.", "k": 3, "t": "(-)" },
+  "3090": { "n": "LITHIUM-METALL-BATTERIEN", "k": 2, "t": "E" },
+  "3264": { "n": "ÄTZENDER SAURER ANORGANISCHER STOFF, FLÜSSIG", "k": 3, "t": "E" },
+  "3268": { "n": "SICHERHEITSEINRICHTUNGEN (z.B. AIRBAGS)", "k": 9, "t": "E" },
+  "3480": { "n": "LITHIUM-IONEN-BATTERIEN", "k": 2, "t": "E" },
+  "3481": { "n": "LITHIUM-IONEN-BATTERIEN IN AUSRÜSTUNGEN", "k": 2, "t": "E" },
+  "3551": { "n": "NATRIUM-IONEN-BATTERIEN (Neu 2025/2026)", "k": 2, "t": "E" },
+  "3552": { "n": "NATRIUM-IONEN-BATTERIEN IN AUSRÜSTUNGEN", "k": 2, "t": "E" }
+}
 }
 }
