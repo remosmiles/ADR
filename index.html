@@ -1,67 +1,53 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>SDR COMMAND CENTER v3.7.3</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="matrix-bg"></div> <div class="desktop-wrapper">
-        <header class="main-header">
-            <div class="system-id">SYSTEM: SDR-ANALYSIS-UNIT_CH</div>
-            <div class="clock" id="live-clock">00:00:00</div>
+<div class="terminal-container">
+    <div class="matrix-overlay"></div>
+    
+    <div class="content-wrapper">
+        <header class="cyber-header">
+            <div class="status-box">SYSTEM: ACTIVE</div>
+            <div class="location-box">LOCATION: GOTTHARD_CONTROL_UNIT</div>
         </header>
 
-        <div class="main-grid">
-            <aside class="control-panel">
-                <div class="terminal-box">
-                    <div class="box-header">DATA_INPUT</div>
-                    <div class="input-row">
-                        <label>UN_CODE:</label>
-                        <input type="text" id="un-input" placeholder="0000" maxlength="4">
+        <div class="layout-grid">
+            <section class="control-unit">
+                <div class="glass-module">
+                    <h3 class="module-title">DATA_ACQUISITION</h3>
+                    <div class="input-field">
+                        <label>UN_CODE [4-DIGIT]</label>
+                        <input type="text" id="un-input" placeholder="0000" autocomplete="off">
                     </div>
-                    <div class="input-row">
-                        <label>LOAD_KG:</label>
-                        <input type="number" id="un-weight" placeholder="QUANTITY">
+                    <div class="input-field">
+                        <label>CARGO_WEIGHT [KG]</label>
+                        <input type="number" id="weight-input" placeholder="WEIGHT">
                     </div>
-                    <button id="run-btn" class="neon-btn">RUN ANALYSIS</button>
+                    <button id="analyse-trigger" class="cyber-btn">EXECUTE_SCAN</button>
                 </div>
 
-                <div id="loader" class="hidden">
-                    <div class="scan-line"></div>
-                    <p>SCANNING DATABASE...</p>
-                    <div class="progress-container">
-                        <div id="bar" class="progress-bar"></div>
+                <div id="loading-sequence" class="hidden">
+                    <div class="loading-text">REQUESTING_SDR_DATABASE...</div>
+                    <div class="bar-frame">
+                        <div id="load-progress" class="bar-fill"></div>
                     </div>
                 </div>
-            </aside>
+            </section>
 
-            <main class="display-panel">
-                <div id="results" class="hidden">
-                    <div class="result-card">
-                        <h2 id="un-name">IDENTIFIED: ---</h2>
-                        
-                        <div class="status-grid">
-                            <div class="status-item" id="tunnel-status-box">
-                                <label>GOTTHARD_PASSAGE</label>
-                                <div id="tunnel-text" class="status-val">WAITING...</div>
-                            </div>
-                            <div class="status-item">
-                                <label>ADR_POINTS</label>
-                                <div id="points-val" class="status-val">0</div>
-                            </div>
-                        </div>
+            <section class="display-unit">
+                <div id="result-screen" class="glass-module output hidden">
+                    <div class="scan-header">ANALYSIS_RESULT</div>
+                    <div class="data-row">
+                        <span class="label">SUBSTANCE:</span>
+                        <span id="res-name" class="val-highlight">---</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">SDR_POINTS:</span>
+                        <span id="res-points" class="val-highlight">0</span>
+                    </div>
 
-                        <div class="terminal-output">
-                            <div class="output-header">SECURITY_PROTOCOLS</div>
-                            <div id="rules-output" class="typewriter-text"></div>
-                        </div>
+                    <div id="tunnel-card" class="decision-box">
+                        <div class="tunnel-id">GOTTHARD_PASSAGE [KAT_E]</div>
+                        <div id="tunnel-verdict" class="verdict-text">PENDING...</div>
                     </div>
                 </div>
-            </main>
+            </section>
         </div>
     </div>
-    <script src="script.js"></script>
-</body>
-</html>
+</div>
