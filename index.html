@@ -1,46 +1,44 @@
-<div class="sdr-container">
-    <div class="sdr-card">
-        <div class="sdr-header">
-            <span class="status-dot"></span>
-            <h2>Schweizer Tunnel-Check</h2>
+<div class="app-shell">
+    <div class="glass-panel">
+        <div class="header">
+            <div class="dot active"></div>
+            <h2>SDR-Portal Schweiz</h2>
         </div>
 
-        <div class="sdr-input-box">
-            <div class="input-wrapper">
+        <div class="input-container">
+            <div class="input-card">
                 <label>UN-NUMMER</label>
-                <input type="text" id="un-input" placeholder="1203" maxlength="4">
+                <input type="text" id="un-id" placeholder="z.B. 1203" maxlength="4">
             </div>
-            <div class="input-wrapper">
+            <div class="input-card">
                 <label>GEWICHT (KG)</label>
-                <input type="number" id="un-weight" placeholder="500">
+                <input type="number" id="un-mass" placeholder="0">
             </div>
         </div>
 
-        <button id="search-btn" class="sdr-btn">Prüfung starten</button>
+        <button id="scan-trigger" class="action-button">DURCHFAHRT PRÜFEN</button>
 
-        <div id="loader-container" class="hidden">
-            <div class="loader-text">Abfrage SDR-Datenbank & Tunnelkategorien...</div>
-            <div class="progress-track">
-                <div id="progress-bar" class="progress-fill"></div>
+        <div id="loading-zone" class="hidden">
+            <div class="load-text">Datenabgleich mit SDR-Anhang 2...</div>
+            <div class="bar-bg">
+                <div id="dynamic-bar" class="bar-fill"></div>
             </div>
         </div>
 
-        <div id="result-card" class="hidden">
-            <div class="result-header">
-                <h3 id="res-un-name">UN 1203 Benzin</h3>
-            </div>
-            
-            <div class="tunnel-result" id="tunnel-box">
-                <div class="tunnel-icon">🚇</div>
-                <div class="tunnel-text">
-                    <strong>Gotthard-Tunnel (Kat. E)</strong>
-                    <span id="tunnel-status">Wird geprüft...</span>
+        <div id="result-display" class="hidden">
+            <div class="res-card">
+                <h4 id="un-title">UN ----</h4>
+                <div class="tunnel-badge" id="gotthard-badge">
+                    <span class="icon">🚇</span>
+                    <div class="info">
+                        <strong>Gotthard (Kat. E)</strong>
+                        <span id="gotthard-status">Prüfung läuft...</span>
+                    </div>
                 </div>
-            </div>
-
-            <div class="points-info">
-                <span>Berechnete Punkte:</span>
-                <strong id="points-val">0</strong>
+                <div class="points-badge">
+                    <span>1000-Punkte Status:</span>
+                    <strong id="final-points">0</strong>
+                </div>
             </div>
         </div>
     </div>
