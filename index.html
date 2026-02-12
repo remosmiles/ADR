@@ -1,58 +1,48 @@
-<div class="main-wrapper">
+<div class="app-container">
     <header class="app-header">
-        <div class="logo-area">
-            <span class="logo-icon">SDR</span>
-            <div class="logo-text">
-                <h1>ADR Explorer</h1>
-                <p>Schweizer Tunnel- & Sicherheitscheck</p>
-            </div>
+        <div class="header-content">
+            <span class="system-tag">SDR | Schweiz</span>
+            <h1>CargoSafe <span class="light">PRO</span></h1>
         </div>
     </header>
 
-    <section class="glass-card input-section">
-        <div class="input-row">
+    <div class="glass-card main-search">
+        <div class="input-group">
             <div class="field">
-                <label>UN-Nummer</label>
-                <input type="text" id="un-num" placeholder="z.B. 1202" maxlength="4">
+                <label>UN-NUMMER</label>
+                <input type="text" id="un-input" placeholder="z.B. 1203" maxlength="4">
             </div>
             <div class="field">
-                <label>Menge (kg/L)</label>
-                <input type="number" id="un-weight" placeholder="Gewicht">
+                <label>MENGE (KG/L)</label>
+                <input type="number" id="un-weight" placeholder="Menge eingeben">
             </div>
         </div>
-        <button id="check-btn" class="primary-btn">Bestimmungen prüfen</button>
-    </section>
+        <button id="check-btn" class="main-button">BESTIMMUNGEN PRÜFEN</button>
+    </div>
 
-    <div id="result-view" class="hidden">
-        <section class="glass-card result-card">
-            <div class="res-header">
-                <div class="un-badge" id="res-un">UN 1202</div>
-                <h2 id="res-label">Dieselkraftstoff</h2>
+    <div id="result-overlay" class="hidden">
+        <div class="glass-card result-sheet">
+            <div class="res-head">
+                <div class="un-number" id="res-un">UN ----</div>
+                <h2 id="res-name">Gefahrgutbezeichnung</h2>
             </div>
 
-            <div class="grid-layout">
-                <div class="info-panel">
-                    <h3><span class="icon">🚇</span> Tunnel-Check Schweiz</h3>
-                    <div id="tunnel-status" class="status-box">
-                        </div>
+            <div class="status-grid">
+                <div class="status-box" id="tunnel-box">
+                    <span class="label">TUNNEL-STATUS (CH)</span>
+                    <div class="value" id="tunnel-val">Warten...</div>
                 </div>
-
-                <div class="info-panel">
-                    <h3><span class="icon">📜</span> SDR Vorschriften</h3>
-                    <ul id="rules-list" class="styled-list">
-                        </ul>
+                <div class="status-box" id="points-box">
+                    <span class="label">1000-PUNKTE-CHECK</span>
+                    <div class="value" id="points-val">0 Pkt.</div>
                 </div>
             </div>
 
-            <div class="points-section">
-                <div class="points-header">
-                    <span>1000-Punkte-Regel</span>
-                    <span id="points-display">0 / 1000</span>
-                </div>
-                <div class="progress-track">
-                    <div id="points-bar" class="progress-fill"></div>
-                </div>
+            <div class="info-details">
+                <h3>VORSCHRIFTEN & AUSRÜSTUNG</h3>
+                <ul id="rule-list" class="pro-list">
+                    </ul>
             </div>
-        </section>
+        </div>
     </div>
 </div>
