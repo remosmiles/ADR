@@ -1,60 +1,44 @@
-// SDR-Datenbank für Schweizer Tunnel (Gotthard = Kategorie E)
-const SDR_DATABASE = {
-    "1202": { name: "DIESEL / HEIZÖL", factor: 1, tunnelCat: "E" },
-    "1203": { name: "BENZIN / OTTOKRAFTSTOFF", factor: 3, tunnelCat: "D/E" },
-    "1965": { name: "FLÜSSIGGAS (LPG)", factor: 3, tunnelCat: "B/D" },
-    "3082": { name: "UMWELTGEFÄHRDEND (FLÜSSIG)", factor: 1, tunnelCat: "E" },
-    "1072": { name: "SAUERSTOFF (KOMPRIMIERT)", factor: 1, tunnelCat: "E" }
+// Beispiel-Datenbank (Diese kannst du beliebig erweitern)
+const adrData = {
+    "1202": { name: "DIESELKRAFTSTOFF", kat: 3, tunnel: "E" },
+    "1203": { name: "BENZIN", kat: 2, tunnel: "D/E" },
+    "1965": { name: "FLÜSSIGGAS (LPG)", kat: 2, tunnel: "B/D" },
+    "3082": { name: "UMWELTGEFÄHRDENDER STOFF", kat: 3, tunnel: "(-)" }
 };
 
-document.getElementById('analyse-trigger').addEventListener('click', function() {
-    const un = document.getElementById('un-input').value;
-    const kg = parseFloat(document.getElementById('weight-input').value) || 0;
-
-    if (!SDR_DATABASE[un]) {
-        alert("CRITICAL ERROR: UN_CODE_NOT_IN_DATABASE");
+function calculate() {
+    const un = document.getElementById('unInput').value;
+    const amount = parseFloat(document.getElementById('amountInput').value);
+    const resultBox = document.getElementById('resultBox');
+    
+    const item = adrData[un];
+    
+    if (!item) {
+        alert("UN-Nummer nicht in Datenbank gefunden. Bitte ADR-Buch prüfen.");
         return;
     }
 
-    // Simulation Scan
-    document.getElementById('loading-sequence').classList.remove('hidden');
-    document.getElementById('result-screen').classList.add('hidden');
+    // ADR Punkte-Logik
+    let faktor = 1;
+    if (item.kat === 1) faktor = 50;
+    else if (item.kat === 2) faktor = 3;
+    else if (item.kat === 3) faktor = 1;
+    else if (item.kat === 0) faktor = 1000; // Vereinfacht für "sofort verboten"
+
+    const punkte = amount * faktor;
+    resultBox.style.display = "block";
+
+    // Prüfung Gotthard (Tunnel E)
+    // Erlaubt wenn: Tunnelcode ist (-), ODER Punkte <= 1000
+    const isForbiddenInE = item.tunnel.includes('E') || item.tunnel.includes('D') || item.tunnel.includes('B');
     
-    let progress = 0;
-    const bar = document.getElementById('load-progress');
-
-    const scan = setInterval(() => {
-        progress += 2;
-        bar.style.width = progress + "%";
-        
-        if (progress >= 100) {
-            clearInterval(scan);
-            processResults(un, kg);
-        }
-    }, 20); // Schnelle Desktop-Simulation
-});
-
-function processResults(un, kg) {
-    const data = SDR_DATABASE[un];
-    const points = kg * data.factor;
-    
-    document.getElementById('loading-sequence').classList.add('hidden');
-    const screen = document.getElementById('result-screen');
-    screen.classList.remove('hidden');
-
-    document.getElementById('res-name').innerText = data.name;
-    document.getElementById('res-points').innerText = points + " PKT";
-
-    const verdictBox = document.getElementById('tunnel-card');
-    const verdictText = document.getElementById('tunnel-verdict');
-
-    // Gotthard-Regel: Kategorie E Tunnel (SDR 1.1.3.6)
-    // Bei Überschreitung der 1000 Punkte Grenze ist der Gotthard verboten
-    if (points > 1000) {
-        verdictBox.className = "decision-box block";
-        verdictText.innerText = "ACCESS_DENIED: TUNNEL_PASSAGE_FORBIDDEN";
+    if (punkte > 1000 && isForbiddenInE) {
+        resultBox.className = "forbidden";
+        document.getElementById('statusText').innerText = "❌ GESPERRT";
+        document.getElementById('detailText').innerText = `${item.name} darf mit ${punkte} Punkten nicht durch den Gotthard.`;
     } else {
-        verdictBox.className = "decision-box pass";
-        verdictText.innerText = "ACCESS_GRANTED: TUNNEL_PASSAGE_OK";
+        resultBox.className = "allowed";
+        document.getElementById('statusText').innerText = "✅ FREIE FAHRT";
+        document.getElementById('detailText').innerText = `Unter 1000 Punkten (aktuell: ${punkte}) ist die Durchfahrt erlaubt.`;
     }
 }
