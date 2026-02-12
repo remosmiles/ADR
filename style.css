@@ -1,78 +1,61 @@
 :root {
-    --accent: #007AFF;
-    --adr-orange: #FF9500;
-    --danger: #FF3B30;
-    --success: #34C759;
-    --bg: #F2F2F7;
-    --card: #FFFFFF;
+    --accent: #0071e3;
+    --danger: #ff3b30;
+    --success: #34c759;
+    --bg: #f5f5f7;
+    --glass: rgba(255, 255, 255, 0.95);
 }
 
 body {
     background-color: var(--bg);
-    font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
-    color: #1D1D1F;
-    margin: 0; padding: 20px;
-    display: flex; justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex; justify-content: center; margin: 0; padding: 20px;
 }
 
-.main-wrapper { width: 100%; max-width: 550px; }
+.app-container { width: 100%; max-width: 500px; }
+
+.app-header { margin-bottom: 30px; text-align: center; }
+.system-tag { background: #000; color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; }
+h1 { font-size: 1.8rem; margin: 10px 0; font-weight: 800; }
+.light { font-weight: 300; color: var(--accent); }
 
 .glass-card {
-    background: var(--card);
-    border-radius: 24px;
-    padding: 24px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
-    border: 1px solid rgba(0,0,0,0.03);
+    background: var(--glass);
+    border-radius: 28px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
-/* Button & Inputs */
-.primary-btn {
-    width: 100%;
-    background: var(--accent);
-    color: white;
-    border: none;
-    padding: 16px;
-    border-radius: 14px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.primary-btn:active { transform: scale(0.98); }
+.input-group { display: flex; gap: 15px; margin-bottom: 20px; }
+.field { flex: 1; display: flex; flex-direction: column; }
+.field label { font-size: 0.65rem; font-weight: 700; color: #86868b; margin-bottom: 8px; letter-spacing: 1px; }
 
 input {
-    width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    border: 1px solid #D2D2D7;
-    background: #F5F5F7;
-    font-size: 1rem;
-    box-sizing: border-box;
+    border: none; background: #f2f2f2; padding: 15px; border-radius: 12px;
+    font-size: 1.1rem; font-weight: 600; outline-color: var(--accent);
 }
 
-/* Tunnel & Status */
-.status-box {
-    padding: 15px;
-    border-radius: 12px;
-    font-weight: 600;
-    text-align: center;
+.main-button {
+    width: 100%; border: none; background: #000; color: #fff;
+    padding: 18px; border-radius: 14px; font-weight: 700; cursor: pointer;
+    transition: all 0.2s;
 }
 
-.allowed { background: #EAF9EE; color: var(--success); }
-.forbidden { background: #FFF1F0; color: var(--danger); }
+.main-button:hover { background: var(--accent); transform: translateY(-2px); }
 
-/* Progress Bar */
-.progress-track {
-    height: 8px; background: #E5E5EA;
-    border-radius: 4px; overflow: hidden; margin-top: 10px;
-}
-
-.progress-fill {
-    height: 100%; width: 0%;
-    background: var(--accent);
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
+/* Resultate Styling */
 .hidden { display: none; }
+.result-sheet { margin-top: 20px; animation: slideUp 0.5s ease-out; }
+.un-number { color: var(--accent); font-weight: 900; font-size: 1.2rem; }
+
+.status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0; }
+.status-box { background: #f8f8f8; padding: 15px; border-radius: 16px; text-align: center; }
+.status-box .label { font-size: 0.6rem; color: #86868b; font-weight: bold; display: block; margin-bottom: 5px; }
+.status-box .value { font-weight: 800; font-size: 0.9rem; }
+
+.pro-list { padding: 0; list-style: none; }
+.pro-list li { padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; color: #1d1d1f; }
+.pro-list li::before { content: "•"; color: var(--accent); font-weight: bold; margin-right: 10px; }
+
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
