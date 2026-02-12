@@ -1,53 +1,71 @@
-<div class="terminal-container">
-    <div class="matrix-overlay"></div>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gotthard Gefahrgut-Check</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; padding: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { color: #333; font-size: 1.2rem; }
+        input, button { width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #0056b3; }
+        #result { margin-top: 20px; padding: 15px; border-radius: 4px; display: none; }
+        .allowed { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .forbidden { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Gotthard Tunnel-Check (Kat. E)</h2>
+    <label for="unCode">UN-Nummer (4-stellig):</label>
+    <input type="text" id="unCode" placeholder="z.B. 1203" maxlength="4">
     
-    <div class="content-wrapper">
-        <header class="cyber-header">
-            <div class="status-box">SYSTEM: ACTIVE</div>
-            <div class="location-box">LOCATION: GOTTHARD_CONTROL_UNIT</div>
-        </header>
+    <label for="weight">Gewicht (in kg):</label>
+    <input type="number" id="weight" placeholder="Gesamtgewicht">
+    
+    <button onclick="checkPassage()">Prüfen</button>
 
-        <div class="layout-grid">
-            <section class="control-unit">
-                <div class="glass-module">
-                    <h3 class="module-title">DATA_ACQUISITION</h3>
-                    <div class="input-field">
-                        <label>UN_CODE [4-DIGIT]</label>
-                        <input type="text" id="un-input" placeholder="0000" autocomplete="off">
-                    </div>
-                    <div class="input-field">
-                        <label>CARGO_WEIGHT [KG]</label>
-                        <input type="number" id="weight-input" placeholder="WEIGHT">
-                    </div>
-                    <button id="analyse-trigger" class="cyber-btn">EXECUTE_SCAN</button>
-                </div>
-
-                <div id="loading-sequence" class="hidden">
-                    <div class="loading-text">REQUESTING_SDR_DATABASE...</div>
-                    <div class="bar-frame">
-                        <div id="load-progress" class="bar-fill"></div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="display-unit">
-                <div id="result-screen" class="glass-module output hidden">
-                    <div class="scan-header">ANALYSIS_RESULT</div>
-                    <div class="data-row">
-                        <span class="label">SUBSTANCE:</span>
-                        <span id="res-name" class="val-highlight">---</span>
-                    </div>
-                    <div class="data-row">
-                        <span class="label">SDR_POINTS:</span>
-                        <span id="res-points" class="val-highlight">0</span>
-                    </div>
-
-                    <div id="tunnel-card" class="decision-box">
-                        <div class="tunnel-id">GOTTHARD_PASSAGE [KAT_E]</div>
-                        <div id="tunnel-verdict" class="verdict-text">PENDING...</div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </div>
+    <div id="result"></div>
 </div>
+
+<script>
+    // Beispiel-Datenbank für Tunnelkategorie E
+    // 'code': UN-Nummer, 'forbidden': true bedeutet generell verboten in Kat. E
+    const dangerGoods = [
+        { code: "1203", name: "Benzin", tunnelCode: "D/E", forbiddenAbove: 0 }, // In E immer verboten bei Kennzeichnungspflicht
+        { code: "3082", name: "Umweltgefährdender Stoff", tunnelCode: "(-)", forbiddenAbove: Infinity }, // Frei durchfahrbar
+        { code: "1001", name: "Acetylen", tunnelCode: "B/D", forbiddenAbove: 0 }
+    ];
+
+    function checkPassage() {
+        const unInput = document.getElementById('unCode').value;
+        const weightInput = parseFloat(document.getElementById('weight').value);
+        const resultDiv = document.getElementById('result');
+
+        const item = dangerGoods.find(g => g.code === unInput);
+
+        resultDiv.style.display = "block";
+
+        if (!item) {
+            resultDiv.className = "forbidden";
+            resultDiv.innerHTML = "<strong>UN-Nummer nicht gefunden.</strong> Bitte ADR-Handbuch prüfen.";
+            return;
+        }
+
+        // Logik für Kategorie E: Fast alles mit Tunnelcode (B/D, D/E etc.) ist verboten, 
+        // wenn die Menge kennzeichnungspflichtig ist (meist ab 1000kg "Punkten").
+        if (weightInput > 1000) {
+            resultDiv.className = "forbidden";
+            resultDiv.innerHTML = `<strong>Verboten!</strong> ${item.name} darf bei diesem Gewicht nicht durch den Gotthard (Kategorie E).`;
+        } else {
+            resultDiv.className = "allowed";
+            resultDiv.innerHTML = `<strong>Erlaubt.</strong> Unter 1000kg (Freigrenze) ist die Passage für ${item.name} meist möglich.`;
+        }
+    }
+</script>
+
+</body>
+</html>
