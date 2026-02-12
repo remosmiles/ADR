@@ -1,52 +1,54 @@
-const SDR_DATA = {
-    "1202": { name: "Dieselkraftstoff", cat: 3 },
-    "1203": { name: "Benzin", cat: 2 },
-    "1965": { name: "Flüssiggas", cat: 2 },
-    "3082": { name: "Umweltgef. Stoff", cat: 3 }
+const DB = {
+    "1202": { name: "Dieselkraftstoff", factor: 1 },
+    "1203": { name: "Benzin", factor: 3 },
+    "1965": { name: "Flüssiggas", factor: 3 },
+    "3082": { name: "Umweltgef. Stoffe", factor: 1 }
 };
 
-document.getElementById('search-btn').addEventListener('click', function() {
-    const un = document.getElementById('un-input').value;
-    const weight = document.getElementById('un-weight').value;
+document.getElementById('scan-trigger').addEventListener('click', function() {
+    const un = document.getElementById('un-id').value;
+    const kg = document.getElementById('un-mass').value;
+
+    if (!DB[un]) { alert("UN-Nummer nicht in Datenbank gefunden."); return; }
+
+    // Start Simulation
+    document.getElementById('loading-zone').classList.remove('hidden');
+    document.getElementById('result-display').classList.add('hidden');
     
-    if(!SDR_DATA[un]) { alert("UN-Nummer nicht gefunden"); return; }
-
-    // UI zurücksetzen & Ladebalken zeigen
-    document.getElementById('loader-container').classList.remove('hidden');
-    document.getElementById('result-card').classList.add('hidden');
     let progress = 0;
-    const bar = document.getElementById('progress-bar');
+    const bar = document.getElementById('dynamic-bar');
 
-    // Lade-Animation (2 Sekunden "Abfrage")
-    const interval = setInterval(() => {
-        progress += 5;
+    const timer = setInterval(() => {
+        progress += 4;
         bar.style.width = progress + "%";
+
         if (progress >= 100) {
-            clearInterval(interval);
-            showResult(un, weight);
+            clearInterval(timer);
+            processSDR(un, kg);
         }
-    }, 100);
+    }, 80); // Dauer ca. 2 Sekunden
 });
 
-function showResult(un, weight) {
-    const data = SDR_DATA[un];
-    const points = weight * (data.cat === 2 ? 3 : 1);
+function processSDR(un, kg) {
+    const item = DB[un];
+    const points = kg * item.factor;
     
-    document.getElementById('loader-container').classList.add('hidden');
-    document.getElementById('result-card').classList.remove('hidden');
-    document.getElementById('res-un-name').innerText = "UN " + un + " " + data.name;
-    document.getElementById('points-val').innerText = points;
+    document.getElementById('loading-zone').classList.add('hidden');
+    document.getElementById('result-display').classList.remove('hidden');
+    
+    document.getElementById('un-title').innerText = "UN " + un + " - " + item.name;
+    document.getElementById('final-points').innerText = points + " Punkte";
 
-    const tBox = document.getElementById('tunnel-box');
-    const tStatus = document.getElementById('tunnel-status');
+    const badge = document.getElementById('gotthard-badge');
+    const status = document.getElementById('gotthard-status');
 
-    // Gotthard Logik (Kategorie E)
-    // Über 1000 Punkte: Verboten für Kat E
+    // Schweizer Tunnel-Regel für Gotthard (Kat. E)
+    // Wenn Punkte > 1000, ist die Durchfahrt nach SDR für Kat. E Tunnel verboten
     if (points > 1000) {
-        tBox.className = "tunnel-result tunnel-error";
-        tStatus.innerText = "DURCHFAHRT VERBOTEN";
+        badge.className = "tunnel-badge stop";
+        status.innerText = "VERBOTEN (SDR 1.1.3.6 überschritten)";
     } else {
-        tBox.className = "tunnel-result tunnel-ok";
-        tStatus.innerText = "DURCHFAHRT ERLAUBT";
+        badge.className = "tunnel-badge pass";
+        status.innerText = "ERLAUBT (Freigrenze)";
     }
 }
