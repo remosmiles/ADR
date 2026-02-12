@@ -1,0 +1,6 @@
+{
+  "1202": { "n": "DIESELKRAFTSTOFF", "k": 3, "t": "E" },
+  "1203": { "n": "BENZIN", "k": 2, "t": "D/E" },
+  "1965": { "n": "LPG (FLÜSSIGGAS)", "k": 2, "t": "B/D" },
+  "3082": { "n": "UMWELTGEFÄHRDENDER STOFF", "k": 3, "t": "(-)" }
+}
