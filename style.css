@@ -1,12 +1,131 @@
-body { font-family: -apple-system, system-ui, sans-serif; background: #eaeff2; padding: 15px; margin: 0; }
-.container { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-h1 { margin-top: 0; color: #2c3e50; font-size: 1.5rem; }
-.subtitle { color: #7f8c8d; margin-bottom: 20px; }
-.input-group { margin-bottom: 15px; }
-label { display: block; margin-bottom: 5px; font-weight: bold; }
-input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
-button { width: 100%; padding: 15px; background: #2980b9; color: white; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; }
-#resultBox { margin-top: 20px; padding: 15px; border-radius: 10px; text-align: center; }
-.result-hidden { display: none; }
-.allowed { background: #27ae60; color: white; }
-.forbidden { background: #c0392b; color: white; }
+:root {
+    --magic-blue: #3498db;
+    --magic-purple: #9b59b6;
+    --success-glow: #2ecc71;
+    --danger-glow: #e74c3c;
+}
+
+body { 
+    font-family: 'Inter', -apple-system, system-ui, sans-serif; 
+    /* Magischer Verlaufshintergrund */
+    background: radial-gradient(circle at top left, #2c3e50, #000000); 
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px; 
+    margin: 0; 
+    color: #fff;
+}
+
+.container { 
+    /* Glassmorphism Effekt */
+    background: rgba(255, 255, 255, 0.05); 
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 30px; 
+    border-radius: 24px; 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3); 
+    max-width: 450px;
+    width: 100%;
+}
+
+h1 { 
+    margin: 0; 
+    background: linear-gradient(to right, #fff, var(--magic-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.8rem; 
+    text-align: center;
+}
+
+.subtitle { 
+    text-align: center;
+    color: rgba(255,255,255,0.6); 
+    font-size: 0.85rem;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
+}
+
+label { 
+    font-size: 0.8rem;
+    color: var(--magic-blue);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block; 
+    font-weight: bold; 
+}
+
+input { 
+    width: 100%; 
+    padding: 14px; 
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.1); 
+    border-radius: 12px; 
+    color: #fff;
+    font-size: 1rem; 
+    transition: all 0.3s ease;
+}
+
+input:focus { 
+    outline: none; 
+    border-color: var(--magic-blue); 
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.4);
+    background: rgba(0,0,0,0.4);
+}
+
+button { 
+    width: 100%; 
+    padding: 16px; 
+    background: linear-gradient(135deg, var(--magic-blue), var(--magic-purple)); 
+    color: white; 
+    border: none; 
+    border-radius: 12px; 
+    font-size: 1.1rem; 
+    font-weight: bold; 
+    cursor: pointer; 
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 10px;
+}
+
+button:hover { 
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(155, 89, 182, 0.4);
+}
+
+button:active { transform: translateY(0); }
+
+#resultBox { 
+    margin-top: 25px; 
+    padding: 20px; 
+    border-radius: 15px; 
+    text-align: center; 
+    animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Result Classes mit Glow-Effekt */
+.allowed { 
+    background: rgba(46, 204, 113, 0.2); 
+    color: #2ecc71; 
+    border: 1px solid #2ecc71;
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.2);
+}
+
+.forbidden { 
+    background: rgba(231, 76, 60, 0.2); 
+    color: #e74c3c; 
+    border: 1px solid #e74c3c;
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.2);
+}
+
+.warning {
+    background: rgba(241, 196, 15, 0.2);
+    color: #f1c40f;
+    border: 1px solid #f1c40f;
+}
